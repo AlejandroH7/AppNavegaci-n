@@ -1,31 +1,45 @@
 import 'package:flutter/material.dart';
 
 class ProductDetailPage extends StatelessWidget {
+  final Map<String, dynamic> product;
+
+  const ProductDetailPage({Key? key, required this.product}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    // Recibimos el argumento enviado desde la lista
-    final String productName =
-        ModalRoute.of(context)?.settings.arguments as String;
+    final name = product['name'] ?? 'Sin nombre';
+    final data = product['data'] as Map<String, dynamic>?; // puede ser null
 
     return Scaffold(
       appBar: AppBar(title: Text('Detalle del Producto')),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Producto seleccionado:', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
             Text(
-              productName,
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              'Nombre:',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // volver a la lista
-              },
-              child: Text('Volver'),
+            Text(name, style: TextStyle(fontSize: 24)),
+            const SizedBox(height: 20),
+            Text(
+              'Detalles:',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            data != null
+                ? Expanded(
+                  child: ListView(
+                    children:
+                        data.entries.map((entry) {
+                          return ListTile(
+                            title: Text('${entry.key}:'),
+                            subtitle: Text('${entry.value}'),
+                          );
+                        }).toList(),
+                  ),
+                )
+                : Text('No hay detalles disponibles.'),
           ],
         ),
       ),
